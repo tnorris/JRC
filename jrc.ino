@@ -1,9 +1,13 @@
+/* Tom Norris, 2017 */
+/* Built on top of a MicroView, https://www.sparkfun.com/products/12923 */
+/* wriring is super simple, two buttons and an Arduino: 
+   Arduino Pin 0/1 -> Momentary Button -> Ground */
+
 #include <MicroView.h>
 #include <EEPROM.h>
 
 #define ROW_PLUS 1
 #define ROW_MINUS 0
-
 #define DEBOUNCE_DELAY 100
 
 #define SAVE_DELAY 5000
@@ -13,7 +17,6 @@ typedef struct {
   bool plus;
   bool minus;
   unsigned long last_press;
-  
 } KeyboardState;
 
 KeyboardState k = { false, false, 0 };
@@ -26,7 +29,6 @@ void setup() {
   setupMicroView();
   k.last_press = millis();
   last_save = millis();
-  EEPROM.get(0, row);
 }
 
 void setupPins() {
@@ -35,7 +37,7 @@ void setupPins() {
 }
 
 void readSettings() {
-  row = 0;
+  EEPROM.get(0, row);
 }
 
 void setupMicroView() {
@@ -68,7 +70,7 @@ void updateDisplay() {
 }
 
 void updateSettings() {
-  if(last_save + SAVE_DELAY > millis() ) { return ; }
+  if(last_save + SAVE_DELAY > millis() ) { return ; } /* don't burn out the flash */
   EEPROM.put(0, row);
   last_save = millis();
 }
